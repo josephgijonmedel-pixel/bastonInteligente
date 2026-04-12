@@ -1,0 +1,1 @@
+C:\proyectos\BastonInteligente\BastonInteligente\BastonInteligente.csproj;x64

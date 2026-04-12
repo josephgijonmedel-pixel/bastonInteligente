@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BastonInteligente.MainPage"
+             BackgroundColor="White">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="25" Padding="30" VerticalOptions="Center">
+
+            <Label Text="BASTÓN INTELIGENTE" 
+                   FontSize="24" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   TextColor="#2196F3"
+                   Margin="0,10,0,0"/>
+
+            <Frame CornerRadius="15" Padding="20" BackgroundColor="#F8F9FA" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                        <Label x:Name="lblBateria" 
+                               Text="Batería: 85%" 
+                               FontSize="16" 
+                               TextColor="Black" 
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+                        <ProgressBar x:Name="barBateria" Progress="0.85" ProgressColor="#2E7D32" WidthRequest="100" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
+                        <BoxView x:Name="dotEstado" Color="Red" WidthRequest="12" HeightRequest="12" CornerRadius="6" VerticalOptions="Center"/>
+                        <Label x:Name="lblEstado" 
+                               Text="Desconectado" 
+                               FontSize="15" 
+                               TextColor="Black"
+                               FontAttributes="Italic" 
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <BoxView Color="#D1D1D1" HeightRequest="1" HorizontalOptions="Fill" />
+
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="ALERTAS EMITIDAS" FontSize="12" HorizontalOptions="Center" TextColor="Black" />
+                        <Label x:Name="lblAlertas" Text="0" FontSize="32" FontAttributes="Bold" HorizontalOptions="Center" TextColor="#2196F3" />
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <VerticalStackLayout Spacing="5" Margin="0,20">
+                <Label Text="Distancia actual" HorizontalOptions="Center" FontSize="14" TextColor="Black" />
+                <Label x:Name="lblDistancia" Text="-- cm" FontSize="80" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black" />
+            </VerticalStackLayout>
+
+            <Button x:Name="btnConectar" 
+                    Text="CONECTAR BASTÓN" 
+                    CornerRadius="25"
+                    BackgroundColor="#2196F3" 
+                    TextColor="White" 
+                    HeightRequest="60"
+                    Clicked="OnConectarClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
