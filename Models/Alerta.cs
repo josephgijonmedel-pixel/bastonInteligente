@@ -8,8 +8,7 @@ namespace BastonInteligente.Models
 {
     public class Alerta
     {
-        public int Distancia { get; set; }
-        public DateTime FechaHora { get; set; }
-        public string NivelPeligro { get; set; }
+        public string Distancia { get; set; } = "0";
+        public DateTime Fecha { get; set; } = DateTime.Now;
     }
 }

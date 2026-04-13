@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BastonInteligente")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+e7f7db4a8722ca33a0eb9c4bf19b13521fdedd39")]
 [assembly: System.Reflection.AssemblyProductAttribute("BastonInteligente")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BastonInteligente")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

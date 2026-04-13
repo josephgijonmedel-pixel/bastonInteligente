@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "3w2VWds8Yyw=",
+  "dgSpecHash": "5gabdMBNpe4=",
   "success": true,
-  "projectFilePath": "C:\\proyectos\\BastonInteligente\\BastonInteligente\\BastonInteligente.csproj",
+  "projectFilePath": "C:\\proyectoBastonInteligente\\bastonInteligente\\BastonInteligente.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\josep\\.nuget\\packages\\googlegson\\2.10.1.4\\googlegson.2.10.1.4.nupkg.sha512",
+    "C:\\Users\\josep\\.nuget\\packages\\inthehand.net.bluetooth\\4.2.4\\inthehand.net.bluetooth.4.2.4.nupkg.sha512",
     "C:\\Users\\josep\\.nuget\\packages\\microsoft.extensions.configuration\\8.0.0\\microsoft.extensions.configuration.8.0.0.nupkg.sha512",
     "C:\\Users\\josep\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\josep\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",

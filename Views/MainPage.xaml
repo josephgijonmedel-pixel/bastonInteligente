@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="BastonInteligente.MainPage"
+             x:Class="BastonInteligente.Views.MainPage"
              BackgroundColor="White">
 
     <ScrollView>
@@ -18,19 +18,17 @@
                 <VerticalStackLayout Spacing="15">
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
-                        <Label x:Name="lblBateria" 
-                               Text="Batería: 85%" 
+                        <Label Text="Batería: 85%" 
                                FontSize="16" 
                                TextColor="Black" 
                                FontAttributes="Bold"
                                VerticalOptions="Center" />
-                        <ProgressBar x:Name="barBateria" Progress="0.85" ProgressColor="#2E7D32" WidthRequest="100" VerticalOptions="Center" />
+                        <ProgressBar Progress="0.85" ProgressColor="#2E7D32" WidthRequest="100" VerticalOptions="Center" />
                     </HorizontalStackLayout>
 
                     <HorizontalStackLayout HorizontalOptions="Center" Spacing="8">
-                        <BoxView x:Name="dotEstado" Color="Red" WidthRequest="12" HeightRequest="12" CornerRadius="6" VerticalOptions="Center"/>
-                        <Label x:Name="lblEstado" 
-                               Text="Desconectado" 
+                        <BoxView Color="{Binding ColorEstado}" WidthRequest="12" HeightRequest="12" CornerRadius="6" VerticalOptions="Center"/>
+                        <Label Text="Sistema Activo" 
                                FontSize="15" 
                                TextColor="Black"
                                FontAttributes="Italic" 
@@ -40,25 +38,31 @@
                     <BoxView Color="#D1D1D1" HeightRequest="1" HorizontalOptions="Fill" />
 
                     <VerticalStackLayout HorizontalOptions="Center">
-                        <Label Text="ALERTAS EMITIDAS" FontSize="12" HorizontalOptions="Center" TextColor="Black" />
-                        <Label x:Name="lblAlertas" Text="0" FontSize="32" FontAttributes="Bold" HorizontalOptions="Center" TextColor="#2196F3" />
+                        <Label Text="ESTADO DEL SENSOR" FontSize="12" HorizontalOptions="Center" TextColor="Black" />
+                        <Label Text="CONECTADO" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" TextColor="{Binding ColorEstado}" />
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>
             </Frame>
 
             <VerticalStackLayout Spacing="5" Margin="0,20">
-                <Label Text="Distancia actual" HorizontalOptions="Center" FontSize="14" TextColor="Black" />
-                <Label x:Name="lblDistancia" Text="-- cm" FontSize="80" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black" />
+                <Label Text="Alertas detectadas" 
+                       HorizontalOptions="Center" 
+                       FontSize="18" 
+                       TextColor="Black" />
+
+                <Label Text="{Binding DistanciaLabel}" 
+                       FontSize="100" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       TextColor="{Binding ColorEstado}" />
             </VerticalStackLayout>
 
-            <Button x:Name="btnConectar" 
-                    Text="CONECTAR BASTÓN" 
+            <Button Text="SISTEMA MONITOREANDO" 
                     CornerRadius="25"
-                    BackgroundColor="#2196F3" 
+                    BackgroundColor="{Binding ColorEstado}" 
                     TextColor="White" 
-                    HeightRequest="60"
-                    Clicked="OnConectarClicked" />
+                    HeightRequest="60" />
 
         </VerticalStackLayout>
     </ScrollView>

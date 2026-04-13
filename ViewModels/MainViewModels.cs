@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO.Ports;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
+using InTheHand.Net.Bluetooth;
+using InTheHand.Net.Sockets;
 
 namespace BastonInteligente.ViewModels
 {
-    public class MainViewModels: INotifyPropertyChanged
+    public partial class MainViewModels : INotifyPropertyChanged
     {
-        // Variables para el puerto serial y el reloj
-        private SerialPort _serialPort;
-        private System.Timers.Timer _timer;
+        private BluetoothClient _btClient;
+        private Stream _btStream;
+        private CancellationTokenSource _cts;
 
-        // Propiedades que la Vista (XAML) va a observar
-        private string _distanciaLabel = "Iniciando...";
-        private Color _colorEstado = Colors.Gray;
+        // Variables para el contador
+        private int _totalAlertas = 0;
+        private bool _objetoDetectadoPreviamente = false;
 
+        private string _distanciaLabel = "0"; // Aquí mostraremos el número de veces
         public string DistanciaLabel
         {
             get => _distanciaLabel;
             set { _distanciaLabel = value; OnPropertyChanged(); }
         }
 
+        private Color _colorEstado = Colors.Gray;
         public Color ColorEstado
         {
             get => _colorEstado;
@@ -34,72 +32,135 @@ namespace BastonInteligente.ViewModels
 
         public MainViewModels()
         {
-            ConfigurarSerial();
-            ConfigurarTimer();
+            _ = ConectarBastonAsync();
         }
 
-        private void ConfigurarSerial()
+        public async Task ConectarBastonAsync()
         {
             try
             {
-                // CAMBIA "COM3" por el puerto real de tu placa
-                _serialPort = new SerialPort("COM3", 115200);
-                _serialPort.ReadTimeout = 500;
-                _serialPort.Open();
+                // Limpiamos cualquier intento previo
+                if (_btClient != null) { _btClient.Close(); _btClient = null; }
+
+                _btClient = new BluetoothClient();
+                DistanciaLabel = "0";
+                ColorEstado = Colors.Orange; // Intentando conectar...
+
+                // Esperamos un segundo para que el hardware del cel reaccione
+                await Task.Delay(1000);
+
+                var devices = _btClient.PairedDevices;
+                var device = devices.FirstOrDefault(d =>
+                    d.DeviceName.Contains("Baston", StringComparison.OrdinalIgnoreCase));
+
+                if (device != null)
+                {
+                    // Intentamos conectar en un hilo separado para no congelar la pantalla
+                    await Task.Run(() =>
+                    {
+                        // Usamos el Standard Serial Port Service ID
+                        _btClient.Connect(device.DeviceAddress, BluetoothService.SerialPort);
+                    });
+
+                    if (_btClient.Connected)
+                    {
+                        _btStream = _btClient.GetStream();
+
+                        MainThread.BeginInvokeOnMainThread(() => {
+                            ColorEstado = Colors.Green; // ¡POR FIN VERDE!
+                        });
+
+                        _cts = new CancellationTokenSource();
+                        _ = LeerDatosAsync(_cts.Token);
+                    }
+                }
+                else
+                {
+                    MainThread.BeginInvokeOnMainThread(() => {
+                        DistanciaLabel = "NO VINCULADO";
+                        ColorEstado = Colors.Gray;
+                    });
+                }
             }
             catch (Exception ex)
             {
-                DistanciaLabel = "Error de conexión";
-                System.Diagnostics.Debug.WriteLine($"Error Serial: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"ERROR REAL: {ex.Message}");
+                MainThread.BeginInvokeOnMainThread(() => {
+                    ColorEstado = Colors.Red;
+                    // Mostramos los primeros 15 caracteres del error para saber qué pasa
+                    DistanciaLabel = "ERR";
+                });
             }
         }
 
-        private void ConfigurarTimer()
+        private async Task LeerDatosAsync(CancellationToken token)
         {
-            // El timer pedirá datos cada 100 milisegundos (10 veces por segundo)
-            _timer = new System.Timers.Timer(100);
-            _timer.Elapsed += OnTimerElapsed;
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
-        }
+            byte[] buffer = new byte[1024];
+            string datosAcumulados = ""; // Para guardar fragmentos de texto
 
-        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            if (_serialPort != null && _serialPort.IsOpen)
+            while (!token.IsCancellationRequested && _btClient.Connected)
             {
                 try
                 {
-                    string dato = _serialPort.ReadLine().Trim();
-
-                    if (int.TryParse(dato, out int distancia))
+                    if (_btStream.CanRead)
                     {
-                        // Actualizamos la interfaz (usamos MainThread porque el Timer corre en otro hilo)
-                        MainThread.BeginInvokeOnMainThread(() =>
+                        int bytesRead = await _btStream.ReadAsync(buffer, 0, buffer.Length, token);
+                        if (bytesRead > 0)
                         {
-                            DistanciaLabel = $"{distancia} cm";
-                            ActualizarColor(distancia);
-                        });
+                            // 1. Convertimos lo recibido a texto y lo sumamos a lo anterior
+                            datosAcumulados += Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                            // 2. Si el texto contiene un salto de línea, significa que llegó un número completo
+                            if (datosAcumulados.Contains("\n"))
+                            {
+                                // Separamos por líneas y tomamos la última línea completa
+                                string[] lineas = datosAcumulados.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                                foreach (var linea in lineas)
+                                {
+                                    // Limpiamos la línea para dejar solo dígitos
+                                    string soloNumeros = new string(linea.Where(char.IsDigit).ToArray());
+
+                                    if (int.TryParse(soloNumeros, out int cms))
+                                    {
+                                        MainThread.BeginInvokeOnMainThread(() =>
+                                        {
+                                            // LÓGICA DEL CONTADOR
+                                            if (cms <= 100 && !_objetoDetectadoPreviamente)
+                                            {
+                                                _totalAlertas++;
+                                                DistanciaLabel = _totalAlertas.ToString();
+                                                _objetoDetectadoPreviamente = true;
+                                                ColorEstado = Colors.Red;
+                                            }
+                                            else if (cms > 100)
+                                            {
+                                                _objetoDetectadoPreviamente = false;
+                                                ColorEstado = Colors.Green;
+                                            }
+                                        });
+                                    }
+                                }
+                                // Limpiamos el acumulador para la siguiente lectura
+                                datosAcumulados = "";
+                            }
+                        }
                     }
                 }
-                catch { /* Error de lectura temporal */ }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error de conexión: {ex.Message}");
+                    MainThread.BeginInvokeOnMainThread(() => {
+                        ColorEstado = Colors.Red; // Aquí es donde se pone rojo
+                        DistanciaLabel = "ERR";
+                    });
+                }
+                await Task.Delay(50);
             }
         }
 
-        private void ActualizarColor(int distancia)
-        {
-            if (distancia < 30)
-                ColorEstado = Colors.Red;
-            else if (distancia < 60)
-                ColorEstado = Colors.Yellow;
-            else
-                ColorEstado = Colors.Green;
-        }
-
-        // Lógica necesaria para que el Data Binding funcione
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
+        protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
     }
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\proyectos\\BastonInteligente\\BastonInteligente\\BastonInteligente.csproj": {}
+    "C:\\proyectoBastonInteligente\\bastonInteligente\\BastonInteligente.csproj": {}
   },
   "projects": {
-    "C:\\proyectos\\BastonInteligente\\BastonInteligente\\BastonInteligente.csproj": {
+    "C:\\proyectoBastonInteligente\\bastonInteligente\\BastonInteligente.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\proyectos\\BastonInteligente\\BastonInteligente\\BastonInteligente.csproj",
+        "projectUniqueName": "C:\\proyectoBastonInteligente\\bastonInteligente\\BastonInteligente.csproj",
         "projectName": "BastonInteligente",
-        "projectPath": "C:\\proyectos\\BastonInteligente\\BastonInteligente\\BastonInteligente.csproj",
+        "projectPath": "C:\\proyectoBastonInteligente\\bastonInteligente\\BastonInteligente.csproj",
         "packagesPath": "C:\\Users\\josep\\.nuget\\packages\\",
-        "outputPath": "C:\\proyectos\\BastonInteligente\\BastonInteligente\\obj\\",
+        "outputPath": "C:\\proyectoBastonInteligente\\bastonInteligente\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -66,6 +66,10 @@
         "net8.0-android34.0": {
           "targetAlias": "net8.0-android",
           "dependencies": {
+            "InTheHand.Net.Bluetooth": {
+              "target": "Package",
+              "version": "[4.2.4, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -113,6 +117,10 @@
         "net8.0-ios18.0": {
           "targetAlias": "net8.0-ios",
           "dependencies": {
+            "InTheHand.Net.Bluetooth": {
+              "target": "Package",
+              "version": "[4.2.4, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -160,6 +168,10 @@
         "net8.0-maccatalyst18.0": {
           "targetAlias": "net8.0-maccatalyst",
           "dependencies": {
+            "InTheHand.Net.Bluetooth": {
+              "target": "Package",
+              "version": "[4.2.4, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -208,6 +220,10 @@
         "net8.0-windows10.0.19041": {
           "targetAlias": "net8.0-windows10.0.19041.0",
           "dependencies": {
+            "InTheHand.Net.Bluetooth": {
+              "target": "Package",
+              "version": "[4.2.4, )"
+            },
             "Microsoft.Extensions.Logging.Debug": {
               "target": "Package",
               "version": "[8.0.0, )"
